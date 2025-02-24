@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StudyFlow</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+xHBqkEQl12vsvrE2zPLFhMYFzBphFyUjX/1vPzS2sDKbeSjO/b7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="images/logo.png" alt="StudyFlow Logo" class="logo-img" />
+                <span class="logo-text">StudyFlow</span>
+            </a>
+            <input type="checkbox" id="toggle" />
+            <label for="toggle" class="fas fa-bars"></label>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="uploadResources.html">Upload Resources</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="studygroups.html">Pomodoro Timer</a></li>
+                <li><a href="login.html" class="nav-btn nav-btn-login">Login</a></li>
+                <li><a href="register.html" class="nav-btn nav-btn-primary">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Form Section -->
+    <section class="auth-section">
+        <div class="container auth-container">
+            <h1>Login to StudyFlow</h1>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" placeholder="example@domain.com" required />
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p class="auth-switch">
+                Don't have an account? <a href="register.html">Sign up here</a>.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-left">
+                <img src="images/logo.png" alt="StudyFlow Logo" class="footer-logo" />
+                <p>© 2024 StudyFlow. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const loginForm = document.getElementById('loginForm');
+    
+        // Handle form submission for login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent the default form submission
+    
+            // Collect form inputs
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+    
+            try {
+                // Send login request to the server
+                const res = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }) // Pass email and password to backend
+                });
+    
+                const result = await res.json();
+    
+                if (res.ok) {
+                    // Login successful, store token in localStorage
+                    alert(result.message); // For example: "Login successful"
+                    localStorage.setItem('token', result.token);
+    
+                    // Redirect to a protected route or dashboard
+                    window.location.href = 'index.html'; // Update this if you have a different dashboard
+                } else {
+                    // Login failed, show error message
+                    alert(result.message); // E.g., "Invalid password" or "No user found"
+                }
+            } catch (err) {
+                console.error('Error during login:', err);
+                alert('Something went wrong. Please try again later.');
+            }
+        });
+    
+        // Optional: Check if user is already logged in on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Validate the token with the server
+                fetch('http://localhost:3000/api/resources/protected', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            alert('You are already logged in. Redirecting...');
+                            window.location.href = 'index.html'; // Redirect to dashboard
+                        }
+                    })
+                    .catch(err => console.error('Error validating token:', err));
+            }
+        });
+    </script>
+    
+</html>

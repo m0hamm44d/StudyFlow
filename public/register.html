@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - StudyFlow</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4C+xHBqkEQl12vsvrE2zPLFhMYFzBphFyUjX/1vPzS2sDKbeSjO/b7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="images/logo.png" alt="StudyFlow Logo" class="logo-img" />
+                <span class="logo-text">StudyFlow</span>
+            </a>
+            <input type="checkbox" id="toggle" />
+            <label for="toggle" class="fas fa-bars"></label>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="uploadResources.html">Upload Resources</a></li>
+                <li><a href="library.html">Library</a></li>
+                <li><a href="studygroups.html">Pomodoro Timer</a></li>
+                <li><a href="login.html" class="nav-btn nav-btn-login">Login</a></li>
+                <li><a href="register.html" class="nav-btn nav-btn-primary">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="container auth-container">
+            <h1>Create New Account</h1>
+            
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="fullName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" name="email" placeholder="example@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            <p class="auth-switch">
+                Already have an account? <a href="login.html">Login here</a>
+            </p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-left">
+                <img src="images/logo.png" alt="StudyFlow Logo" class="footer-logo">
+                <p>&copy; 2024 StudyFlow. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+    
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+    
+            const fullName = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+    
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords don't match.");
+                return;
+            }
+    
+            // Prepare data for API
+            const data = { fullName, email, password };
+    
+            try {
+                // Make POST request to register endpoint
+                const res = await fetch('http://localhost:3000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+    
+                const result = await res.json();
+    
+                if (res.ok) {
+                    // Registration successful
+                    alert(result.message); // E.g., "User created successfully"
+                    window.location.href = 'login.html'; // Redirect to login page
+                } else {
+                    // Registration failed
+                    alert(result.message); // E.g., "Email already in use"
+                }
+            } catch (err) {
+                console.error('Error during sign up:', err);
+                alert('Something went wrong. Please try again later.');
+            }
+        });
+    </script>
+    
+   
+</html>
+

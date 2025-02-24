@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyFlow - Home</title>
+
+  <!-- FONT AWESOME (for icons) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhKN/NcBpCCh4PP8cJcRrQjVFH9S35x0p+Qjr7/Z0Yi+P7r5S2szD8Ske6Jo/b7g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- EXTERNAL CSS -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+</head>
+<body>
+  <!-- NAVIGATION BAR -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="StudyFlow Logo" class="logo-img" />
+        <span class="logo-text">StudyFlow</span>
+      </a>
+      <input type="checkbox" id="toggle" />
+      <label for="toggle" class="hamburger"><i class="fas fa-bars"></i></label>
+      <ul class="nav-menu">
+        <li><a href="about.html">About</a></li>
+        <li><a href="uploadResources.html">Upload Resources</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="studygroups.html">Pomodoro Timer</a></li>
+        <li><a href="login.html" class="nav-btn">Login</a></li>
+        <li><a href="register.html" class="nav-btn nav-btn-primary">Sign Up</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero" style="background-image: url('images/hero-bg.jpg');">
+    <div class="hero-content container">
+      <h1>Welcome to StudyFlow</h1>
+      <p>Your modern platform for AI-enhanced flashcards, spaced repetition, and collaborative study.</p>
+      <a href="register.html" class="btn btn-primary">Register Now</a>
+    </div>
+  </header>
+
+  <!-- FEATURES PREVIEW SECTION -->
+  <section class="features-preview container">
+    <h2>Why StudyFlow?</h2>
+    <p class="section-tagline">
+      StudyFlow is designed with simplicity and functionality in mind, helping students stay organized and maximize retention.
+    </p>
+    <div class="features-grid">
+      <div class="feature-box">
+        <i class="fas fa-brain feature-icon"></i>
+        <h3>AI-Generated Content</h3>
+        <p>Automatically transform your notes into flashcards, quizzes, or mind maps.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-sync feature-icon"></i>
+        <h3>Pomodoro Timer</h3>
+        <p>Retain information effectively through our Pomodoro timer.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-users feature-icon"></i>
+        <h3>Community Library</h3>
+        <p>Share resources with a vibrant community and discover pre-made content.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-chart-line feature-icon"></i>
+        <h3>Progress Tracking</h3>
+        <p>Visualize learning milestones and monitor your study progress.</p>
+      </div>
+    </div>
+    <div class="features-cta">
+      <a href="register.html" class="btn btn-secondary">Sign Up Now</a>
+    </div>
+  </section>
+
+  <!-- CALL-TO-ACTION SECTION -->
+  <section class="cta-section">
+    <div class="container cta-container">
+      <h2>Start Your Journey</h2>
+      <p>Join a community of learners and make the most of every study session.</p>
+      <a href="register.html" class="btn btn-primary btn-large">Get Started</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <img src="images/logo.png" alt="StudyFlow Logo" class="footer-logo" />
+        <p>© 2024 StudyFlow. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script src="js/app.js"></script>
+</body>
+</html>

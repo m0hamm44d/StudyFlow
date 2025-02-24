@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyFlow - Upload Resources</title>
+
+  <!-- FONT AWESOME -->
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-Bx9QfyWFT/jtQ+VhZKoTyt8HDoLho02jB76oujA5h4HEJxqgAQhveTnYkN7HRNTN3IYZC+QTxM3T9MIQ5jEXxA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+  <!-- EXTERNAL CSS -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- NAVIGATION BAR -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="StudyFlow Logo" class="logo-img" />
+        <span class="logo-text">StudyFlow</span>
+      </a>
+      <input type="checkbox" id="toggle" />
+      <label for="toggle" class="hamburger"><i class="fas fa-bars"></i></label>
+      <ul class="nav-menu">
+        <li><a href="about.html">About</a></li>
+        <li><a href="uploadResources.html" class="active-page">Upload Resources</a></li>
+        <li><a href="library.html">Library</a></li>
+        <li><a href="studygroups.html">Pomodoro Timer</a></li>
+        <li><a href="login.html" class="nav-btn">Login</a></li>
+        <li><a href="register.html" class="nav-btn nav-btn-primary">Sign Up</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <h1>Upload your resources now and turn them into notecards!</h1>
+      <p>Explore the innovative tools and functionalities that make StudyFlow unique</p>
+    </div>
+  </header>
+
+  <!-- FEATURES CONTENT -->
+  <section class="features-details container">
+    <div class="feature-detail-grid">
+      <div class="feature-detail-item">
+        <h2><i class="fas fa-brain"></i> AI-Generated Flashcards</h2>
+        <p>
+          Upload or type in your notes, and let our AI convert them into interactive 
+          flashcards, quizzes, or mind maps. We use advanced natural language processing 
+          to break down complex topics into digestible study materials.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload Section -->
+<section class="upload-section">
+  <div class="container upload-container">
+    <h2 class="upload-heading">Upload Your Resources</h2>
+
+    <!-- Upload Form -->
+    <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="titleInput">Resource Title</label>
+        <input
+          type="text"
+          id="titleInput"
+          name="title"
+          placeholder="Enter resource title"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="descriptionInput">Description</label>
+        <input
+          type="text"
+          id="descriptionInput"
+          name="description"
+          placeholder="Enter a brief description"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="fileInput">Upload File</label>
+        <input
+          type="file"
+          id="fileInput"
+          name="resourceFile"
+          accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.jpg,.png"
+          required
+        />
+      </div>
+      <button type="submit" class="btn upload-btn">
+        <i class="fas fa-upload"></i> Upload
+      </button>
+    </form>
+    <p id="uploadMessage"></p>
+  </div>
+</section>
+
+  <!-- Flashcard Section -->
+  <section id="flashcardsSection" class="flashcards-section" style="display: none;">
+    <div class="container">
+      <h2>Generated Flashcards</h2>
+      <div id="carousel" class="carousel">
+        <button id="prevBtn" class="carousel-btn">&lt;</button>
+        <div id="flashcardDisplay" class="flashcard-display">
+          <!-- Flashcards will be dynamically added here -->
+        </div>
+        <button id="nextBtn" class="carousel-btn">&gt;</button>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent the form from refreshing the page
+  
+      const formData = new FormData(event.target);
+      document.getElementById('uploadMessage').textContent = 'Uploading and processing...';
+  
+      try {
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (!token) {
+          document.getElementById('uploadMessage').textContent = 'You must log in before uploading resources.';
+          return;
+        }
+  
+        const response = await fetch('http://localhost:3000/api/resources/create', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        });
+  
+        const result = await response.json();
+        console.log('Server response:', result); // Debug the server response
+  
+        if (response.ok) {
+          document.getElementById('uploadMessage').textContent = 'Resource uploaded successfully!';
+  
+          // Flashcard carousel logic
+          const flashcardDisplay = document.getElementById('flashcardDisplay');
+          flashcardDisplay.innerHTML = ''; // Clear previous content
+  
+          const flashcards = result.flashcards || [];
+          let currentIndex = 0;
+  
+          // Function to display a single flashcard
+          const displayFlashcard = (index) => {
+            flashcardDisplay.innerHTML = `
+              <div class="flashcard">
+                <p>${flashcards[index]}</p>
+              </div>
+            `;
+          };
+  
+          // Show the first flashcard
+          if (flashcards.length > 0) {
+            displayFlashcard(currentIndex);
+            document.getElementById('flashcardsSection').style.display = 'block'; // Show flashcards section
+          } else {
+            document.getElementById('uploadMessage').textContent += ' No flashcards generated.';
+          }
+  
+          // Event listeners for navigation buttons
+          document.getElementById('prevBtn').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
+            displayFlashcard(currentIndex);
+          });
+  
+          document.getElementById('nextBtn').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % flashcards.length;
+            displayFlashcard(currentIndex);
+          });
+        } else {
+          document.getElementById('uploadMessage').textContent = result.message || 'Upload failed.';
+        }
+      } catch (error) {
+        console.error('Error during upload:', error);
+        document.getElementById('uploadMessage').textContent = 'An error occurred. Please try again.';
+      }
+    });
+  </script>
+
+  <!-- JavaScript -->
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent the form from refreshing the page
+
+      const formData = new FormData(event.target);
+      document.getElementById('uploadMessage').textContent = 'Uploading and processing...';
+
+      try {
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (!token) {
+          document.getElementById('uploadMessage').textContent = 'You must log in before uploading resources.';
+          return;
+        }
+
+        const response = await fetch('http://localhost:3000/api/resources/create', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Display success message
+          document.getElementById('uploadMessage').textContent = 'Resource uploaded successfully!';
+
+          // Display generated flashcards
+          const flashcardsContainer = document.getElementById('flashcardsContainer');
+          flashcardsContainer.innerHTML = ''; // Clear previous content
+
+          result.flashcards.forEach((card) => {
+            const flashcard = document.createElement('div');
+            flashcard.className = 'flashcard';
+            flashcard.innerHTML = `<p>${card}</p>`;
+            flashcardsContainer.appendChild(flashcard);
+          });
+
+          // Show the flashcards section
+          document.getElementById('flashcardsSection').style.display = 'block';
+        } else {
+          // Display server-side error message
+          document.getElementById('uploadMessage').textContent = result.message || 'Upload failed.';
+        }
+      } catch (error) {
+        console.error('Error during upload:', error);
+        document.getElementById('uploadMessage').textContent = 'An error occurred. Please try again.';
+      }
+    });
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <img src="images/logo.png" alt="StudyFlow Logo" class="footer-logo" />
+        <p>© 2024 StudyFlow. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
